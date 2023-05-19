@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <link href="mycss.css" rel="stylesheet" />
+    <script src="jquery.3.2.1.min.js"></script>
+    <script src="DrawingScripts.js"></script>
+    <script src="methods.js"></script>
+    <script src="GameClient.js"></script>
+    <script type='text/javascript'>
+        var nounsFile = "sharov_nouns_sorted.txt";
+        var keyCanvasId = "canvas2";
+        var gameState = new GameState();
+        function readTextFile(file) {
+            $.get(file, function (data) {               
+                gameState.all_words = data.split('\r\n');
+            });
+        }
+        $(document).ready(function () {
+            readTextFile(nounsFile);
+            var container = "divKeys";
+            var canvasId = keyCanvasId;
+
+            buildKeyBoxes(container, canvasId);
+        }
+        )
+       
+    </script>
+</head>
+<body >
+    <div style="text-align: center">
+        Цель этой игры - найти как можно больше существительных, содержащих в точности заданный набор согласных <br />
+        Каждая согласная должна встречаться один раз<hr />
+    </div>
+    <div style="text-align: center">
+        Выберите несколько согласных с помощью мыши и нажмите Ввод: <br />
+        <input id="txtSelectedLetters" type="text" readonly />
+    </div>
+    <div id="divKeys" >
+        <canvas id="canvas2" class="tryBoxesCanvas" width="1180" height="120"></canvas>
+    </div>
+    <div style="text-align: center">
+        В нашем словаре найдено <input id="txtDictCount" type="text" readonly /> слов с этими согласными
+    </div>
+    <hr />
+    <div >
+        <table class="center">
+            <tr>
+                <td>
+                    <input id="txtNewWord" type="text" />  
+                    <input id="btnAddWord" type="button" value="Добавить слово" 
+                           onclick="addWord()" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <textarea id="txtUserWords" rows="10" cols="10" readonly></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Найдено слов: &nbsp; <input id="txtCountUserWords" type="text" readonly />
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+<script>
+    $("#txtNewWord").keyup(function (event) {
+        if (event.keyCode === 13) {
+            $("#btnAddWord").click();
+        }
+    });
+</script>
+</html>
