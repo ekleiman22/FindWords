@@ -37,7 +37,8 @@ var messages =
         "Неверное слово",
         "Не выбраны согласные",
         "Это слово не принадлежит нашему словарю",
-        "Это слово уже найдено"
+        "Это слово уже найдено",
+        "Согласные уже выбраны. Для нового набора нажмите Очистить"
     ];
 
 
@@ -72,7 +73,7 @@ function processKeyMouseDown(keyRow, keyColumn, letter) {
     
     if (keyRow != lastKeyRowIndex ||
         (keyColumn != specialKeysIndices[0] && keyColumn != specialKeysIndices[1])) {
-        gameState.addSelectedLetter(letter);
+       // gameState.addSelectedLetter(letter);
        //add selected letter to input box
         var inputValue = $("#txtSelectedLetters").val();
         if (inputValue != "")
@@ -86,23 +87,33 @@ function processKeyMouseDown(keyRow, keyColumn, letter) {
 }
 function processSpecialKeys(keyColumn) {
     if (keyColumn == specialKeysIndices[0]) {//delete selected letters
-        $("#txtSelectedLetters").val("");          
-        $('#txtUserWords').val("");
-        $('#txtDictCount').val("");
-        $('#txtCountUserWords').val("");
+        //$("#txtSelectedLetters").val("");          
+        //$('#txtUserWords').val("");
+        //$('#txtDictCount').val("");
+        //$('#txtCountUserWords').val("");
         
-        gameState = new GameState();
-        readTextFile(nounsFile);
+        //gameState = new GameState();
+        //readTextFile(nounsFile);
+        beginNewGame();
     }
     if (keyColumn == specialKeysIndices[1]) {
+        if (gameState.selectedLetters.length > 0)
+        {
+            alert(messages[5]);
+            $("#txtSelectedLetters").val(gameState.selectedLetters.join(","));
+            return;
+        }
+
+        var inputValue = $("#txtSelectedLetters").val();
+        gameState.selectedLetters = inputValue.split(",");
         if (gameState.selectedLetters.length < minSelectedLettersCount ||
             gameState.selectedLetters.length> maxSelectedLettersCount ) {
             alert(messages[0].replace('{0}', minSelectedLettersCount).replace('{1}', maxSelectedLettersCount));
             return;
         }
         //process input
-        var inputValue = $("#txtSelectedLetters").val();
-        gameState.selectedLetters = inputValue.split(",");
+        //var inputValue = $("#txtSelectedLetters").val();
+        //gameState.selectedLetters = inputValue.split(",");
         var words = filterByLetters();
         gameState.validWords = words;
         $("#txtDictCount").val(words.length);
@@ -247,5 +258,15 @@ function addWord() {
     else
         alert(messages[1]);
 }
+function beginNewGame() {
+    $("#txtSelectedLetters").val("");
+    $('#txtUserWords').val("");
+    $('#txtDictCount').val("");
+    $('#txtCountUserWords').val("");
+
+    gameState = new GameState();
+    readTextFile(nounsFile);
+}
+
 
 
